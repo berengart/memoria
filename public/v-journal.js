@@ -26,11 +26,12 @@
     const monthItems = items.filter((i) => i.date.startsWith(ym)).sort((a, b) => b.date.localeCompare(a.date) || a.slug.localeCompare(b.slug));
     app.innerHTML = `
       <div class="row-flex" style="margin-bottom:14px"><h1 style="margin:0">Tagebuch</h1><span class="spacer"></span>
+        <div class="cal-nav">
         <a class="btn" href="#/journal?m=${shift(-12)}" title="Ein Jahr zurück" aria-label="Ein Jahr zurück">«</a><a class="btn" href="#/journal?m=${shift(-1)}" title="Voriger Monat" aria-label="Voriger Monat">←</a>
         <select id="calMonth" aria-label="Monat" style="width:auto">${Array.from({ length: 12 }, (_, i) => `<option value="${i + 1}" ${i + 1 === m ? 'selected' : ''}>${esc(monthName(`${y}-${pad(i + 1)}`).split(' ')[0])}${monthCount.get(`${y}-${pad(i + 1)}`) ? ` (${monthCount.get(`${y}-${pad(i + 1)}`)})` : ''}</option>`).join('')}</select>
         <select id="calYear" aria-label="Jahr" style="width:auto">${years.map((yy) => `<option value="${yy}" ${yy === y ? 'selected' : ''}>${yy}${yearCount.get(yy) ? ` (${yearCount.get(yy)})` : ''}</option>`).join('')}</select>
         <a class="btn" href="#/journal?m=${shift(1)}" title="Nächster Monat" aria-label="Nächster Monat">→</a><a class="btn" href="#/journal?m=${shift(12)}" title="Ein Jahr vor" aria-label="Ein Jahr vor">»</a>
-        <a class="btn" href="#/journal">Heute</a></div>
+        <a class="btn" href="#/journal">Heute</a></div></div>
       <div class="card"><div class="cal-head"><span>Mo</span><span>Di</span><span>Mi</span><span>Do</span><span>Fr</span><span>Sa</span><span>So</span></div><div class="cal">${cells}</div>
         ${feat('mood') ? `<div class="legend">${MOODS.map((mm) => `<span>${mm.e} ${mm.l}</span>`).join('')}</div>` : ''}</div>
       <div class="card"><h2>Einträge im ${esc(monthName(ym))} <span class="muted small-text">${monthItems.length}</span></h2>${monthItems.length ? monthItems.map((i) => row(i)).join('') : '<div class="empty"><p>Keine Einträge in diesem Monat. Klicke einen Tag im Kalender an, um zu schreiben.</p><a class="btn primary small" href="#/journal/${todayStr()}">✍️ Heute schreiben</a></div>'}</div>`;

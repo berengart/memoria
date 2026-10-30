@@ -728,3 +728,21 @@ body.anon .side { display: none; }
 .av-dead::after { content: ''; position: absolute; inset: 0; border-radius: 50%; pointer-events: none; background: linear-gradient(45deg, transparent 0 68%, #0b0b0f 68% 83%, transparent 83%); }
 .map-pin .av-dead { width: 100%; height: 100%; }
 .map-pin .av-dead > .avatar { width: 100%; height: 100%; }
+
+/* Mobil: nichts darf die Seite breiter als den Bildschirm machen */
+.grid > *, .card, .stage, #app, main { min-width: 0; }
+.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.cal-head, .cal { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.cal-cell { min-width: 0; overflow: hidden; }
+@media (max-width: 860px) { .cols-2, .cols-3 { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 600px) {
+  .cal-head, .cal { gap: 3px; }
+  .cal-cell { padding: 3px 4px; aspect-ratio: auto; height: 46px; min-height: 0; border-radius: 8px; }
+  .cal-cell .mk { font-size: .9rem; }
+  .cal-nav { width: 100%; }
+  .cal-nav select { order: -2; flex: none; min-width: 0; width: calc(50% - 3px) !important; }
+  .cal-nav .btn { flex: 1 1 0; justify-content: center; text-align: center; padding-left: 8px; padding-right: 8px; }
+}
+.cal-nav { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+input[type=file] { max-width: 100%; min-width: 0; }
+.photo-edit { flex-wrap: wrap; }
