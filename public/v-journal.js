@@ -12,6 +12,10 @@
     const ym = /^\d{4}-\d{2}$/.test(q.m || '') ? q.m : todayStr().slice(0, 7);
     const [y, m] = ym.split('-').map(Number);
     const shift = (n) => { const d = new Date(y, m - 1 + n, 1); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}`; };
+    const monthCount = new Map(), yearCount = new Map();
+    for (const i of items) { const k = i.date.slice(0, 7); monthCount.set(k, (monthCount.get(k) || 0) + 1); const yy = +i.date.slice(0, 4); yearCount.set(yy, (yearCount.get(yy) || 0) + 1); }
+    const nowY = new Date().getFullYear(), minY = Math.min(y, nowY - 5, ...yearCount.keys()), maxY = Math.max(y, nowY + 1);
+    const years = []; for (let yy = maxY; yy >= minY; yy--) years.push(yy);
     const startOffset = (new Date(y, m - 1, 1).getDay() + 6) % 7, dim = new Date(y, m, 0).getDate(), today = todayStr();
     let cells = '<div class="cal-cell empty"></div>'.repeat(startOffset);
     for (let d = 1; d <= dim; d++) {
@@ -22,11 +26,16 @@
     const monthItems = items.filter((i) => i.date.startsWith(ym)).sort((a, b) => b.date.localeCompare(a.date) || a.slug.localeCompare(b.slug));
     app.innerHTML = `
       <div class="row-flex" style="margin-bottom:14px"><h1 style="margin:0">Tagebuch</h1><span class="spacer"></span>
-        <a class="btn" href="#/journal?m=${shift(-1)}">←</a><strong style="min-width:150px;text-align:center">${esc(monthName(ym))}</strong><a class="btn" href="#/journal?m=${shift(1)}">→</a>
+        <a class="btn" href="#/journal?m=${shift(-12)}" title="Ein Jahr zurück" aria-label="Ein Jahr zurück">«</a><a class="btn" href="#/journal?m=${shift(-1)}" title="Voriger Monat" aria-label="Voriger Monat">←</a>
+        <select id="calMonth" aria-label="Monat" style="width:auto">${Array.from({ length: 12 }, (_, i) => `<option value="${i + 1}" ${i + 1 === m ? 'selected' : ''}>${esc(monthName(`${y}-${pad(i + 1)}`).split(' ')[0])}${monthCount.get(`${y}-${pad(i + 1)}`) ? ` (${monthCount.get(`${y}-${pad(i + 1)}`)})` : ''}</option>`).join('')}</select>
+        <select id="calYear" aria-label="Jahr" style="width:auto">${years.map((yy) => `<option value="${yy}" ${yy === y ? 'selected' : ''}>${yy}${yearCount.get(yy) ? ` (${yearCount.get(yy)})` : ''}</option>`).join('')}</select>
+        <a class="btn" href="#/journal?m=${shift(1)}" title="Nächster Monat" aria-label="Nächster Monat">→</a><a class="btn" href="#/journal?m=${shift(12)}" title="Ein Jahr vor" aria-label="Ein Jahr vor">»</a>
         <a class="btn" href="#/journal">Heute</a></div>
       <div class="card"><div class="cal-head"><span>Mo</span><span>Di</span><span>Mi</span><span>Do</span><span>Fr</span><span>Sa</span><span>So</span></div><div class="cal">${cells}</div>
         ${feat('mood') ? `<div class="legend">${MOODS.map((mm) => `<span>${mm.e} ${mm.l}</span>`).join('')}</div>` : ''}</div>
       <div class="card"><h2>Einträge im ${esc(monthName(ym))} <span class="muted small-text">${monthItems.length}</span></h2>${monthItems.length ? monthItems.map((i) => row(i)).join('') : '<div class="empty"><p>Keine Einträge in diesem Monat. Klicke einen Tag im Kalender an, um zu schreiben.</p><a class="btn primary small" href="#/journal/${todayStr()}">✍️ Heute schreiben</a></div>'}</div>`;
+    const jump = () => go(`#/journal?m=${$('#calYear').value}-${pad($('#calMonth').value)}`);
+    $('#calMonth').addEventListener('change', jump); $('#calYear').addEventListener('change', jump);
   }
 
   /* ------------------------------------------------------------- Notizen */
