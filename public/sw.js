@@ -1,5 +1,5 @@
 /* Memoria Service Worker: App-Hülle offline, Lesezugriff auf zuletzt geladene Inhalte. */
-const VERSION = 'v11';
+const VERSION = 'v12';
 const SHELL = `memoria-shell-${VERSION}`, DATA = `memoria-data-${VERSION}`;
 const SHELL_FILES = ['/', '/index.html', '/style.css', '/theme-init.js', '/core.js', '/charts.js', '/crypto.js', '/v-forms.js', '/v-dashboard.js', '/v-people.js', '/v-journal.js', '/v-family.js', '/v-map.js', '/v-review.js', '/v-quick.js', '/nav.js', '/v-item.js', '/v-live.js', '/v-editor.js', '/v-mood.js', '/v-graph.js', '/v-tools.js', '/settings-ui.js', '/settings-more.js', '/main.js', '/manifest.webmanifest', '/icon-192.png', '/icon.svg', '/fonts/inter-Regular.woff', '/fonts/inter-Medium.woff', '/fonts/inter-SemiBold.woff', '/fonts/inter-Bold.woff', '/icons.js'];
 const NO_CACHE_API = /^\/api\/(auth|audit|events|backup|sync|notify|export|vcard|geocode|reverse|weather|calendar|integrity|duplicates)/;

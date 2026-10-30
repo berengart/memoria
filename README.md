@@ -17,7 +17,7 @@ Alles liegt als ganz normale **Markdown-Dateien** auf deinem eigenen Rechner. Ke
 | | |
 |---|---|
 | 📝 **Schreiben wie in Obsidian** | Formatierter Editor ohne sichtbares Markdown – `# `, `- `, `**fett**`, `[[Link]]` wandeln sich beim Tippen sofort um. Ein Klick auf „Markdown“ zeigt den Rohtext. |
-| 📓 **Tagebuch** | Ein Eintrag pro Tag mit Stimmung, Energie, Lied des Tages, Wetter und Ort. Rückverweise, Tags, Jahresrückblick, Verlauf aller Fassungen. |
+| 📓 **Tagebuch** | Bücherregal mit einem Buch pro Jahr. Ein Eintrag pro Tag mit Stimmung, Energie, Lied des Tages, Wetter und Ort. Rückverweise, Tags, Jahresrückblick, Verlauf aller Fassungen. |
 | 👥 **Menschen** | Persönliche Kontakte wie in Monica: Telefon, Adressen, Geburtstage, Geschenkideen, Schulden, Zeitleiste aller Treffen und Erwähnungen, Erinnerung an Kontaktwünsche. |
 | 🌳 **Stammbaum** | Aus Eltern, Kindern, Partnern und Geschwistern entsteht automatisch ein Stammbaum nach Familien, mit Mädchennamen und Lebensdaten. Export als PNG, PDF und GEDCOM. |
 | 🗺️ **Karte** | Wo wohnt wer – und wo hat jemand früher gewohnt? Zeitverlauf, Familienlinien, Tagebuch-Orte und Umkreissuche. Ohne Fremdbibliothek, Online-Karte nur auf Wunsch. |
@@ -158,6 +158,9 @@ App: **http://localhost:4444**. Beim ersten Aufruf legst du das erste Konto an (
 
 ### Editor (formatiert, wie in Obsidian)
 Der Text wird immer formatiert angezeigt und direkt so bearbeitet – Markdown-Zeichen sieht man nicht. Wer Markdown tippt, bekommt sofort das Ergebnis: `# ` Überschrift, `- ` Liste, `1. ` nummerierte Liste, `> ` Zitat, `[ ] ` Aufgabe, `**fett**`, `*kursiv*`, `~~durch~~`, `` `code` ``, ``` ``` ``` + Enter Codeblock, `---` + Enter Trennlinie, `[[Name]]` Verknüpfung (mit Vorschlägen). Die Werkzeugleiste und Strg+B/I/K/E arbeiten auf dem formatierten Text. Der Knopf **Markdown** zeigt den ganzen Text roh und lässt ihn dort bearbeiten (wird gemerkt) – das ist auch der Weg für Tabellen und Sonderfälle. Gespeichert wird weiterhin reines Markdown; unveränderte Absätze werden unverändert zurückgeschrieben.
+
+### Bücherregal der Tagebücher
+Oben im Reiter **Tagebuch** steht ein Regal: Jedes Jahr ist ein Buch mit Einband, Jahreszahl, Anzahl der Einträge, durchschnittlicher Stimmung, Datum des letzten Eintrags und einer Stimmungskurve über die Monate (das laufende Jahr ist hervorgehoben). Das 🎨 am Buch wechselt die Einbandfarbe (wird im Browser gemerkt). Ein Klick schlägt das Buch auf: **Jahresansicht** (`#/journal?y=2025`) mit allen zwölf Monaten als kleine Kalender in Stimmungsfarben, ein Klick auf einen Monat öffnet den Monatskalender.
 
 ### Datum ändern und Art umwandeln
 Im Bearbeiten-Formular gibt es für Tagebucheinträge und Notizen ein Feld **Datum** (bei Notizen optional). Ändert man das Datum eines Tagebucheintrags, wird die Datei auf den neuen Tag umbenannt (Verlauf und Verknüpfungen `[[2026-03-05]]` wandern mit; gibt es am Zieltag schon einen Eintrag, entsteht ein zusätzlicher mit Titel im Namen). Über **Art des Eintrags** wird eine Notiz in einen Tagebucheintrag umgewandelt und umgekehrt (beim Umwandeln in ein Tagebuch zählt das Datumsfeld, sonst das Notizdatum bzw. der Tag der letzten Änderung).

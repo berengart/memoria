@@ -746,3 +746,33 @@ body.anon .side { display: none; }
 .cal-nav { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 input[type=file] { max-width: 100%; min-width: 0; }
 .photo-edit { flex-wrap: wrap; }
+
+/* ---- Bücherregal der Tagebuch-Jahre ---- */
+.shelf-card { background: var(--card); border-radius: 18px; padding: 18px 18px 6px; margin-bottom: 18px; box-shadow: 0 1px 2px #1d21300d; }
+.shelf-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+.bookshelf { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 0; }
+.bk-cell { position: relative; padding: 16px 12px 0; display: flex; justify-content: center; }
+.bk-cell::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 16px; background: linear-gradient(#a06c43, #8a5a35); box-shadow: 0 8px 12px -6px #0005; }
+.book { position: relative; z-index: 1; display: flex; flex-direction: column; width: 100%; max-width: 176px; height: 232px; margin-bottom: 16px; padding: 20px 16px 16px 22px; border-radius: 5px 12px 12px 5px; color: #fff; text-decoration: none;
+  background: linear-gradient(135deg, var(--bk), color-mix(in srgb, var(--bk) 78%, #000));
+  box-shadow: inset 7px 0 0 #00000026, inset 9px 0 6px -4px #ffffff40, 0 10px 18px -6px #0006; transition: transform .2s, box-shadow .2s; }
+.book:hover, .book:focus-visible { transform: translateY(-8px) rotate(-1deg); text-decoration: none; box-shadow: inset 7px 0 0 #00000026, inset 9px 0 6px -4px #ffffff40, 0 18px 24px -8px #0008; }
+.book.now { box-shadow: inset 7px 0 0 #00000026, inset 9px 0 6px -4px #ffffff40, 0 0 0 2px var(--card), 0 0 0 4px var(--bk), 0 10px 18px -6px #0006; }
+.bk-year { font-size: 2.1rem; font-weight: 800; letter-spacing: .02em; line-height: 1; }
+.bk-line { display: block; width: 58%; border-top: 2px solid #ffffff90; margin: 10px 0 10px; }
+.bk-p { font-size: .8rem; opacity: .95; line-height: 1.5; } .bk-last { opacity: .75; }
+.bk-curve { position: absolute; left: 22px; right: 16px; bottom: 14px; width: calc(100% - 38px); height: 34px; } .bk-curve polyline { fill: none; stroke: #fff; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; opacity: .9; }
+.bk-col { position: absolute; top: 6px; right: 8px; border: 0; background: #ffffff26; color: #fff; border-radius: 99px; width: 26px; height: 26px; padding: 0; font-size: .8rem; cursor: pointer; opacity: 0; transition: opacity .15s; }
+.book:hover .bk-col, .book:focus-within .bk-col, .bk-col:focus-visible { opacity: 1; }
+@media (hover: none) { .bk-col { opacity: .7; } }
+@media (max-width: 600px) { .bookshelf { grid-template-columns: repeat(2, minmax(0, 1fr)); } .bk-cell { padding: 12px 6px 0; } .book { height: 200px; padding: 16px 12px 14px 18px; } .bk-year { font-size: 1.7rem; } .bk-p { font-size: .74rem; } .bk-curve { left: 18px; width: calc(100% - 30px); } .shelf-card { padding: 14px 10px 4px; } }
+/* Jahresansicht */
+.year-cover { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; padding: 22px 26px; margin-bottom: 18px; border-radius: 16px; color: #fff; background: linear-gradient(135deg, var(--bk), color-mix(in srgb, var(--bk) 78%, #000)); box-shadow: 0 10px 22px -10px var(--bk); }
+.yc-year { font-size: 3rem; font-weight: 800; line-height: 1; } .yc-stats { display: flex; gap: 8px 22px; flex-wrap: wrap; font-size: .95rem; } .yc-stats b { font-weight: 700; }
+.mgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
+.mcard { display: block; background: var(--card); border-radius: 14px; padding: 12px 14px 14px; color: var(--text); border: 1px solid var(--line); transition: transform .15s, border-color .15s; }
+.mcard:hover { text-decoration: none; border-color: var(--accent); transform: translateY(-2px); } .mcard.leer { opacity: .6; }
+.mc-h { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+.mc-g { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; } .mc-g i { aspect-ratio: 1; border-radius: 3px; background: var(--line); opacity: .55; display: block; }
+.mc-g i.has { background: var(--accent); opacity: 1; } .mc-g i[style*="--mc"] { background: var(--mc); } .mc-g i.today { outline: 2px solid var(--accent); outline-offset: 1px; opacity: 1; } .mc-g i:empty:not(.has):not(.today) { }
+@media (max-width: 600px) { .mgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .year-cover { padding: 16px 18px; } .yc-year { font-size: 2.3rem; } }

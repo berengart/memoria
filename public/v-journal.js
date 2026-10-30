@@ -5,8 +5,66 @@
   const { $, $$, esc, enc, pad, isDate, todayStr, parseD, fmtD, addDays, diffDays, fmtLong, fmtShort, monthName, ago, MOODS, moodColor, TYPE, href, feat, go, api, getItems, invalidate, toast, dispTitle, tagChips, moodChip, fileUrl, avatar, row, isDark, embedHTML, songLine, lookupSong, onLeave, sparkline, lineChart } = M;
   const app = M.$('#app');
   /* ------------------------------------------------------------ Tagebuch */
+  /* ---------------------------------------------------- Bücherregal der Jahre */
+  const BOOKCOL = ['#4f46e5', '#0f766e', '#b45309', '#9d174d', '#1d4ed8', '#6d28d9', '#475569', '#15803d'];
+  const lsGet = (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+  const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch (e) { /* egal */ } };
+  const bookColor = (y) => { const c = lsGet('bookcol-' + y); return BOOKCOL.includes(c) ? c : BOOKCOL[y % BOOKCOL.length]; };
+  const moodEmoji = (v) => (v ? MOODS[Math.max(0, Math.min(4, Math.round(v) - 1))].e : '');
+  function yearStats(items, y) {
+    const list = items.filter((i) => i.date.startsWith(y + '-'));
+    const moods = list.filter((i) => i.mood).map((i) => i.mood);
+    const months = Array.from({ length: 12 }, () => ({ n: 0, m: [] }));
+    for (const i of list) { const k = +i.date.slice(5, 7) - 1; months[k].n++; if (i.mood) months[k].m.push(i.mood); }
+    const last = list.reduce((a, i) => (!a || i.date > a ? i.date : a), '');
+    return { n: list.length, avg: moods.length ? moods.reduce((a, b) => a + b, 0) / moods.length : 0, months, last };
+  }
+  function shelfHTML(items) {
+    const nowY = new Date().getFullYear();
+    const ys = new Set(items.map((i) => +i.date.slice(0, 4))); ys.add(nowY);
+    const years = [...ys].sort((a, b) => b - a);
+    const showMood = feat('mood');
+    const books = years.map((y) => {
+      const st = yearStats(items, y), c = bookColor(y);
+      const pts = showMood ? st.months.map((m, k) => (m.m.length ? [k, m.m.reduce((a, b) => a + b, 0) / m.m.length] : null)).filter(Boolean) : [];
+      const curve = pts.length > 1 ? `<svg class="bk-curve" viewBox="0 0 154 36" aria-hidden="true"><polyline points="${pts.map(([k, v]) => `${(k * 14).toFixed(1)},${(32 - (v - 1) * 7).toFixed(1)}`).join(' ')}"/></svg>` : '';
+      return `<div class="bk-cell"><a class="book ${y === nowY ? 'now' : ''}" href="#/journal?y=${y}" style="--bk:${c}" aria-label="Tagebuch ${y}: ${st.n} Einträge"><button type="button" class="bk-col" data-y="${y}" title="Einbandfarbe wechseln" aria-label="Einbandfarbe für ${y} wechseln">🎨</button>
+        <span class="bk-year">${y}</span><span class="bk-line"></span><span class="bk-p">${st.n} ${st.n === 1 ? 'Eintrag' : 'Einträge'}</span>${showMood && st.avg ? `<span class="bk-p">Ø Stimmung ${moodEmoji(st.avg)} ${st.avg.toFixed(1).replace('.', ',')}</span>` : ''}${st.last ? `<span class="bk-p bk-last">zuletzt: ${esc(fmtShort(st.last))}</span>` : '<span class="bk-p bk-last">noch leer</span>'}${curve}</a></div>`;
+    }).join('');
+    return `<section class="shelf-card"><div class="shelf-head"><h2 style="margin:0">📚 Meine Tagebücher</h2><span class="muted small-text">Ein Buch pro Jahr – anklicken zum Aufschlagen</span></div><div class="bookshelf" id="bookshelf">${books}</div></section>`;
+  }
+  function bindShelf() {
+    $$('#bookshelf .bk-col').forEach((b) => b.addEventListener('click', (e) => {
+      e.preventDefault(); e.stopPropagation();
+      const y = +b.dataset.y, i = BOOKCOL.indexOf(bookColor(y)); lsSet('bookcol-' + y, BOOKCOL[(i + 1) % BOOKCOL.length]);
+      b.closest('.book').style.setProperty('--bk', bookColor(y));
+    }));
+  }
+  function yearView(items, y) {
+    const st = yearStats(items, y), c = bookColor(y), nowY = new Date().getFullYear(), today = todayStr();
+    const byDate = new Map(); for (const i of items) if (!byDate.has(i.date) || i.slug === i.date) byDate.set(i.date, i);
+    const best = st.months.reduce((a, m, k) => (m.n > (a ? a.n : 0) ? { n: m.n, k } : a), null);
+    const cards = st.months.map((mo, k) => {
+      const ym = `${y}-${pad(k + 1)}`, off = (new Date(y, k, 1).getDay() + 6) % 7, dim = new Date(y, k + 1, 0).getDate();
+      let dots = '<i></i>'.repeat(off);
+      for (let d = 1; d <= dim; d++) {
+        const ds = `${ym}-${pad(d)}`, e = byDate.get(ds);
+        dots += `<i class="${e ? 'has' : ''} ${ds === today ? 'today' : ''}" ${e && e.mood && feat('mood') ? `style="--mc:${moodColor(e.mood)}"` : ''}></i>`;
+      }
+      const avg = mo.m.length ? mo.m.reduce((a, b) => a + b, 0) / mo.m.length : 0;
+      return `<a class="mcard ${mo.n ? '' : 'leer'}" href="#/journal?m=${ym}" aria-label="${esc(monthName(ym))}: ${mo.n} Einträge"><div class="mc-h"><strong>${esc(monthName(ym).split(' ')[0])}</strong><span class="muted small-text">${mo.n ? mo.n + (feat('mood') && avg ? ' · ' + moodEmoji(avg) : '') : '–'}</span></div><div class="mc-g">${dots}</div></a>`;
+    }).join('');
+    app.innerHTML = `
+      <div class="row-flex" style="margin-bottom:14px"><a class="btn" href="#/journal">← Regal</a><h1 style="margin:0">Tagebuch ${y}</h1><span class="spacer"></span>
+        <a class="btn" href="#/journal?y=${y - 1}" aria-label="Vorjahr">« ${y - 1}</a>${y < nowY + 1 ? `<a class="btn" href="#/journal?y=${y + 1}" aria-label="Folgejahr">${y + 1} »</a>` : ''}</div>
+      <div class="year-cover" style="--bk:${c}"><div class="yc-year">${y}</div><div class="yc-stats"><span><b>${st.n}</b> ${st.n === 1 ? 'Eintrag' : 'Einträge'}</span>${feat('mood') && st.avg ? `<span>Ø Stimmung <b>${moodEmoji(st.avg)} ${st.avg.toFixed(1).replace('.', ',')}</b></span>` : ''}${best ? `<span>aktivster Monat <b>${esc(monthName(`${y}-${pad(best.k + 1)}`).split(' ')[0])}</b> (${best.n})</span>` : ''}</div></div>
+      <div class="mgrid">${cards}</div>`;
+  }
+
   async function journalList(_, q) {
     const items = (await getItems()).filter((i) => i.type === 'journal' && i.date);
+    const qy = /^\d{4}$/.test(q.y || '') ? +q.y : null;
+    if (qy) return yearView(items, qy);
     const byDate = new Map();
     for (const i of items) if (!byDate.has(i.date) || i.slug === i.date) byDate.set(i.date, i);
     const ym = /^\d{4}-\d{2}$/.test(q.m || '') ? q.m : todayStr().slice(0, 7);
@@ -25,6 +83,7 @@
     }
     const monthItems = items.filter((i) => i.date.startsWith(ym)).sort((a, b) => b.date.localeCompare(a.date) || a.slug.localeCompare(b.slug));
     app.innerHTML = `
+      ${shelfHTML(items)}
       <div class="row-flex" style="margin-bottom:14px"><h1 style="margin:0">Tagebuch</h1><span class="spacer"></span>
         <div class="cal-nav">
         <a class="btn" href="#/journal?m=${shift(-12)}" title="Ein Jahr zurück" aria-label="Ein Jahr zurück">«</a><a class="btn" href="#/journal?m=${shift(-1)}" title="Voriger Monat" aria-label="Voriger Monat">←</a>
@@ -35,6 +94,7 @@
       <div class="card"><div class="cal-head"><span>Mo</span><span>Di</span><span>Mi</span><span>Do</span><span>Fr</span><span>Sa</span><span>So</span></div><div class="cal">${cells}</div>
         ${feat('mood') ? `<div class="legend">${MOODS.map((mm) => `<span>${mm.e} ${mm.l}</span>`).join('')}</div>` : ''}</div>
       <div class="card"><h2>Einträge im ${esc(monthName(ym))} <span class="muted small-text">${monthItems.length}</span></h2>${monthItems.length ? monthItems.map((i) => row(i)).join('') : '<div class="empty"><p>Keine Einträge in diesem Monat. Klicke einen Tag im Kalender an, um zu schreiben.</p><a class="btn primary small" href="#/journal/${todayStr()}">✍️ Heute schreiben</a></div>'}</div>`;
+    bindShelf();
     const jump = () => go(`#/journal?m=${$('#calYear').value}-${pad($('#calMonth').value)}`);
     $('#calMonth').addEventListener('change', jump); $('#calYear').addEventListener('change', jump);
   }
