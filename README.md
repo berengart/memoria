@@ -1,4 +1,64 @@
-# Memoria
+<div align="center">
+
+# 📓 Memoria
+
+**Dein persönliches Gedächtnis – Tagebuch, Menschen, Notizen und Stammbaum in einer selbst gehosteten App.**
+
+Alles liegt als ganz normale **Markdown-Dateien** auf deinem eigenen Rechner. Kein Konto bei einem Dienst, keine Cloud, kein Lock-in – und mit Obsidian öffnest du denselben Ordner einfach mit.
+
+![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white) ![Node](https://img.shields.io/badge/Node.js-%E2%89%A5%2022.5-339933?logo=nodedotjs&logoColor=white) ![Markdown](https://img.shields.io/badge/Daten-Markdown-000000?logo=markdown&logoColor=white) ![Abh%C3%A4ngigkeiten](https://img.shields.io/badge/Fremdbibliotheken-minimal-6366f1)
+
+<img src="docs/screenshots/uebersicht.png" alt="Übersicht mit Stimmung, Woche, Geburtstagen und letzten Einträgen" width="860">
+
+</div>
+
+## ✨ Auf einen Blick
+
+| | |
+|---|---|
+| 📝 **Schreiben wie in Obsidian** | Formatierter Editor ohne sichtbares Markdown – `# `, `- `, `**fett**`, `[[Link]]` wandeln sich beim Tippen sofort um. Ein Klick auf „Markdown“ zeigt den Rohtext. |
+| 📓 **Tagebuch** | Ein Eintrag pro Tag mit Stimmung, Energie, Lied des Tages, Wetter und Ort. Rückverweise, Tags, Jahresrückblick, Verlauf aller Fassungen. |
+| 👥 **Menschen** | Persönliche Kontakte wie in Monica: Telefon, Adressen, Geburtstage, Geschenkideen, Schulden, Zeitleiste aller Treffen und Erwähnungen, Erinnerung an Kontaktwünsche. |
+| 🌳 **Stammbaum** | Aus Eltern, Kindern, Partnern und Geschwistern entsteht automatisch ein Stammbaum nach Familien, mit Mädchennamen und Lebensdaten. Export als PNG, PDF und GEDCOM. |
+| 🗺️ **Karte** | Wo wohnt wer – und wo hat jemand früher gewohnt? Zeitverlauf, Familienlinien, Tagebuch-Orte und Umkreissuche. Ohne Fremdbibliothek, Online-Karte nur auf Wunsch. |
+| 🔗 **Verknüpft** | `[[Doppelte Klammern]]` verbinden Personen, Notizen und Tage. Das Datum eines Eintrags lässt sich ändern, Notizen und Tagebuch wandelst du ineinander um – Links wandern mit. |
+| 🔒 **Privat und sicher** | Einzelne Texte lassen sich im Browser verschlüsseln. Zwei-Faktor-Anmeldung, Mehrbenutzer, Datenprüfung, Papierkorb. Nichts verlässt den Server, außer du aktivierst Wetter oder Karte. |
+| ⚡ **Schnell** | Schnell erfassen (Text, Foto, Sprachnotiz), Befehlspalette `Strg+K`, Tastenkürzel, Kalender-Abo für Geburtstage, App-Installation als PWA, Dunkelmodus. |
+
+## 🖼️ Bilder
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/editor.png" alt="Editor"><br><sub><b>Editor</b> – formatierter Text, Markdown nur auf Knopfdruck</sub></td>
+<td width="50%"><img src="docs/screenshots/stammbaum.png" alt="Stammbaum"><br><sub><b>Stammbaum</b> – nach Familien gruppiert, mit Export</sub></td>
+</tr>
+<tr>
+<td><img src="docs/screenshots/person.png" alt="Person"><br><sub><b>Person</b> – Überblick, Zeitleiste, Familie und Orte</sub></td>
+<td><img src="docs/screenshots/tagebuch.png" alt="Tagebuch"><br><sub><b>Tagebuch</b> – Einträge mit Stimmung und Lied</sub></td>
+</tr>
+<tr>
+<td><img src="docs/screenshots/notiz.png" alt="Notiz"><br><sub><b>Notizen</b> – verlinkt mit Menschen und Tagen</sub></td>
+<td><img src="docs/screenshots/dunkel.png" alt="Dunkelmodus"><br><sub><b>Dunkelmodus</b> – automatisch nach Systemeinstellung</sub></td>
+</tr>
+</table>
+
+<p align="center"><img src="docs/screenshots/mobil.png" alt="Smartphone-Ansicht" width="260"><br><sub><b>Unterwegs</b> – als App auf dem Smartphone installierbar</sub></p>
+
+## 🚀 Schnellstart
+
+```bash
+git clone https://github.com/berengart/memoria.git
+cd memoria
+docker compose up -d --build
+```
+
+Dann **http://localhost:4444** öffnen und das erste Konto anlegen (wird Administrator). Deine Daten liegen im Ordner `data/` neben der `docker-compose.yml`.
+
+> Die Screenshots zeigen erfundene Beispieldaten.
+
+---
+
+# Ausführliche Dokumentation
 
 Persönliche Wissens- und Tagebuch-App im Docker-Container. Alle Inhalte liegen als **Markdown-Dateien** im Ordner `data/` neben der `docker-compose.yml` – lesbar und editierbar mit jedem Editor, auch mit Obsidian. Die Dateien bleiben die Quelle der Wahrheit; alles andere (Suchindex, Verlauf) ist ableitbar.
 
