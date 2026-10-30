@@ -80,7 +80,7 @@
   /** Zeile mit Lebensdaten: „* 1950 † 2020 (70)“ bzw. „* 1980 (46)“ */
   function lifeLine(n) {
     const a = ageOf(n.born, n.died);
-    return [year(n.born) && '* ' + year(n.born), n.died && '†' + (year(n.died) ? ' ' + year(n.died) : ''), a !== null ? `(${a})` : ''].filter(Boolean).join(' ');
+    return [year(n.born) && '* ' + year(n.born), (n.died || n.dead) && '†' + (year(n.died) ? ' ' + year(n.died) : ''), a !== null ? `(${a})` : ''].filter(Boolean).join(' ');
   }
   const placeLine = (n) => (n.bplace && n.dplace ? `${n.bplace} → ${n.dplace}` : n.bplace ? '* ' + n.bplace : n.dplace ? '† ' + n.dplace : '');
   const tipOf = (n) => [n.title + (n.maiden ? ` (geb. ${n.maiden})` : ''), [n.born && '* ' + n.born + (n.bplace ? ' in ' + n.bplace : ''), n.died && '† ' + n.died + (n.dplace ? ' in ' + n.dplace : ''), ageOf(n.born, n.died) !== null ? `Alter: ${ageOf(n.born, n.died)}` : ''].filter(Boolean).join(', ')].filter(Boolean).join('\n');
@@ -131,7 +131,7 @@
     return L.map((l, i) => `<text x="${W / 2}" y="${Y[i]}" text-anchor="middle" class="${l.c}">${esc(l.t)}</text>`).join('');
   };
   const PHDEF = '<defs><clipPath id="ftc" clipPathUnits="objectBoundingBox"><circle cx=".5" cy=".5" r=".5"/></clipPath></defs>';
-  const phEl = (n) => (n.photo ? `<g class="ft-ph"><image href="${esc(M.fileUrl(n.photo))}" x="-12" y="-12" width="34" height="34" clip-path="url(#ftc)" preserveAspectRatio="xMidYMid slice"/><circle class="ft-phr" cx="5" cy="5" r="17"/></g>` : '');
+  const phEl = (n) => (n.photo ? `<g class="ft-ph"><image href="${esc(M.fileUrl(n.photo))}"${n.died || n.dead ? ' style="filter:grayscale(1)"' : ''} x="-12" y="-12" width="34" height="34" clip-path="url(#ftc)" preserveAspectRatio="xMidYMid slice"/><circle class="ft-phr" cx="5" cy="5" r="17"/></g>` : '');
   function treeSVG(tree, nodeHref) {
     const L = layout(tree);
     const paths = tree.edges.map(([p, c]) => [L.byId.get(p), L.byId.get(c)]).concat(tree.ghosts.map((g) => [L.byId.get(g.id), L.byId.get(g.forSlug)]))
@@ -146,7 +146,7 @@
     const nodes = L.all.map((n) => {
       if (n.kind === 'ghost') return `<g class="ft-node ft-ghost" data-for="${esc(n.forSlug)}" data-role="${esc(n.role)}" transform="translate(${n.px},${n.py})" tabindex="0" role="button" aria-label="${esc(n.title)}"><rect width="${W}" height="${H}" rx="10"/><text x="${W / 2}" y="${H / 2 + 5}" text-anchor="middle">＋ ${esc(n.role)}</text></g>`;
       const sub = lifeLine(n) || ({ sibling: n.half ? 'Halbgeschwister' : 'Geschwister', partner: n.ex ? (n.coParent ? 'Elternteil' : 'Ex-Partner') : 'Partner', descendant: '', ancestor: '', root: 'Ich' }[n.kind] || '');
-      const cls = `ft-node ft-${n.kind}${n.gender ? ' ft-' + n.gender : ''}${n.died ? ' ft-dead' : ''}`;
+      const cls = `ft-node ft-${n.kind}${n.gender ? ' ft-' + n.gender : ''}${n.died || n.dead ? ' ft-dead' : ''}`;
       return `<a href="${nodeHref ? nodeHref(n.slug) : `#/person/${enc(n.slug)}`}" class="${cls}" transform="translate(${n.px},${n.py})"><title>${esc(tipOf(n))}</title><rect width="${W}" height="${H}" rx="10"/>${phEl(n)}${nodeText(n, sub)}</a>`;
     }).join('');
     return `<svg class="ft-svg" viewBox="0 0 ${L.width} ${L.height}" width="${L.width}" height="${L.height}" role="img" aria-label="Stammbaum">${PHDEF}${paths}${couples}${nodes}</svg>`;
@@ -299,7 +299,7 @@
     }
     const nodes = [...L.byId.values()].map((n) => {
       const sub = lifeLine(n);
-      return `<a href="#/person/${enc(n.slug)}" class="ft-node ft-full${n.guest ? ' ft-guest' : ''}${n.gender ? ' ft-' + n.gender : ''}${n.died ? ' ft-dead' : ''}" data-slug="${esc(n.slug)}" data-name="${esc(n.title.toLowerCase())}" transform="translate(${n.px},${n.py})"><title>${esc(tipOf(n))}</title><rect width="${W}" height="${H}" rx="10"/>${phEl(n)}${nodeText(n, sub)}</a>`;
+      return `<a href="#/person/${enc(n.slug)}" class="ft-node ft-full${n.guest ? ' ft-guest' : ''}${n.gender ? ' ft-' + n.gender : ''}${n.died || n.dead ? ' ft-dead' : ''}" data-slug="${esc(n.slug)}" data-name="${esc(n.title.toLowerCase())}" transform="translate(${n.px},${n.py})"><title>${esc(tipOf(n))}</title><rect width="${W}" height="${H}" rx="10"/>${phEl(n)}${nodeText(n, sub)}</a>`;
     }).join('');
     return { svg: `<g>${PHDEF}${paths.join('')}${lines.join('')}${hearts.join('')}${nodes}</g>`, width: L.width, height: L.height };
   }

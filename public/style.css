@@ -721,3 +721,10 @@ body.anon .side { display: none; }
 .editor-wrap.is-md #ed { display: block; min-height: 340px; resize: vertical; overflow: auto; }
 #mdToggle[aria-pressed=true] { background: var(--accent); color: #fff; border-color: var(--accent); }
 @media (max-width: 700px) { .live { padding: 12px 14px 30px; } .live[data-empty="1"]::before { left: 14px; right: 14px; } }
+
+/* Verstorbene: Profilbild schwarz-weiß mit schwarzem Trauerband in der Ecke */
+.av-dead { position: relative; display: inline-flex; flex: none; border-radius: 50%; vertical-align: middle; }
+.av-dead > .avatar { filter: grayscale(1); }
+.av-dead::after { content: ''; position: absolute; inset: 0; border-radius: 50%; pointer-events: none; background: linear-gradient(45deg, transparent 0 68%, #0b0b0f 68% 83%, transparent 83%); }
+.map-pin .av-dead { width: 100%; height: 100%; }
+.map-pin .av-dead > .avatar { width: 100%; height: 100%; }

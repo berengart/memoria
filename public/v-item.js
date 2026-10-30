@@ -21,11 +21,18 @@
   function factsHTML(it) {
     const m = it.meta, f = [];
     const add = (k, v, html) => { if (v) f.push(`<div class="fact"><div class="k">${k}</div><div class="v">${html || esc(v)}</div></div>`); };
+    if (it.deceased) { const dd = String(m.died || ''); const full = dd.match(/^\d{4}-\d{2}-\d{2}$/); add('Verstorben', 'x', [dd ? esc(full ? fmtShort(dd) : dd) : 'ja', m.deathplace ? 'in ' + esc(m.deathplace) : ''].filter(Boolean).join(' ')); }
     add('Geburtsname', m.maidenname); add('Spitzname', m.nickname); add('Beziehung', m.relationship);
     if (m.birthday) {
       const b = String(m.birthday); const full = b.match(/^(\d{4})-(\d{2})-(\d{2})$/);
       let extra = '';
-      if (full) { const t = todayStr(); let age = +t.slice(0, 4) - +full[1]; if (t.slice(5) < `${full[2]}-${full[3]}`) age--; extra = ` (${age} Jahre)`; }
+      if (full) {
+        const dd = String(m.died || ''), df = dd.match(/^(\d{4})-(\d{2})-(\d{2})$/), dy = dd.match(/^(\d{4})$/);
+        if (!it.deceased || df || dy) {
+          const t = df ? dd : dy ? `${dy[1]}-12-31` : todayStr(); let age = +t.slice(0, 4) - +full[1]; if (t.slice(5) < `${full[2]}-${full[3]}`) age--;
+          extra = it.deceased ? ` (wurde ${age})` : ` (${age} Jahre)`;
+        }
+      }
       const md = b.match(/^(?:--)?(\d{2})-(\d{2})$/);
       add('Geburtstag', b, esc(full ? fmtShort(b) : md ? `${md[2]}.${md[1]}.` : b) + extra);
     }

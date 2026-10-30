@@ -72,10 +72,10 @@
   const fileUrl = (name) => '/files/' + enc(name); // Der Server findet die Datei im passenden Unterordner
   function avatar(it, big) {
     const cls = 'avatar' + (big ? ' big' : '');
-    if (it.photo) return `<img class="${cls}" src="${fileUrl(it.photo)}" alt="">`;
     let h = 0; for (const c of it.title) h = (h * 31 + c.charCodeAt(0)) % 360;
     const ini = it.title.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0].toUpperCase()).join('');
-    return `<span class="${cls}" style="background:hsl(${h} 45% 48%)">${esc(ini)}</span>`;
+    const el = it.photo ? `<img class="${cls}" src="${fileUrl(it.photo)}" alt="">` : `<span class="${cls}" style="background:hsl(${h} 45% 48%)">${esc(ini)}</span>`;
+    return it.deceased ? `<span class="av-dead" title="verstorben">${el}</span>` : el; // schwarz-weiß mit schwarzem Trauerband
   }
   function row(it, ctx) {
     const meta = it.type === 'journal' ? `${it.song ? '🎵 ' : ''}${moodChip(it.mood)}` : tagChips((it.tags || []).slice(0, 2));

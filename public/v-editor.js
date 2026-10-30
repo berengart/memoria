@@ -9,7 +9,7 @@
     if (type === 'person') return [
       { k: 'name', l: 'Name', req: 1 }, { k: 'maidenname', l: 'Mädchenname / Geburtsname (falls durch Heirat anderer Name)', ph: 'z. B. Schmidt' }, { k: 'nickname', l: 'Spitzname' }, { k: 'aliases', l: 'Weitere Namen (Komma)', t: 'list' },
       { k: 'relationship', l: 'Beziehung', ph: 'Freund, Kollegin, Familie…' }, { k: 'gender', l: 'Geschlecht (für Verwandtschaftsbezeichnungen)', t: 'select', opts: [['', 'keine Angabe'], ['w', 'weiblich'], ['m', 'männlich'], ['d', 'divers']] },
-      { k: 'birthday', l: 'Geburtstag', t: 'date', partial: 1 }, { k: 'birthplace', l: 'Geburtsort' }, { k: 'died', l: 'Gestorben am (optional)', t: 'date', year: 1 }, { k: 'deathplace', l: 'Sterbeort (optional)' },
+      { k: 'birthday', l: 'Geburtstag', t: 'date', partial: 1 }, { k: 'birthplace', l: 'Geburtsort' }, { k: 'deceased', l: 'Verstorben', t: 'check' }, { k: 'died', l: 'Gestorben am (optional)', t: 'date', year: 1 }, { k: 'deathplace', l: 'Sterbeort (optional)' },
       { k: 'website', l: 'Webseite' },
       { k: 'company', l: 'Firma' }, { k: 'job', l: 'Beruf' }, { k: 'met', l: 'Kennengelernt (wo / wie)' },
       { k: 'places', l: '🕘 Frühere Wohnorte (nur Ortsnamen, Komma getrennt, optional mit Zeitraum: Forchheim (1990–2004), Muggendorf (ab 2010))', t: 'places', wide: 1, ph: 'Muggendorf, Forchheim (1990–2004), Hundsboden' },
@@ -52,8 +52,11 @@
     if (type !== 'person') meta.date = it.date || meta.date || '';
     const defs = fieldDefs(type);
     const val = (f) => { const v = meta[f.k]; return Array.isArray(v) ? v.map((x) => (x && typeof x === 'object' ? (f.t === 'places' && M.map ? M.map.placeLabel(x) : x.name) : x)).filter(Boolean).join(', ') : v ?? ''; };
+    const isDead = type === 'person' && !!(meta.died || meta.deathplace || meta.deceased);
     const fieldHTML = (f) => {
       const id = `f_${f.k}`, v = esc(val(f));
+      if (f.t === 'check') return `<div class="wide"><label class="sw-row" style="border:0"><input type="checkbox" id="${id}" ${isDead ? 'checked' : ''}><span><b>${f.l}</b></span></label></div>`;
+      const dead = f.k === 'died' || f.k === 'deathplace';
       const input = f.t === 'date' ? M.dateHTML({ id, value: val(f), partial: f.partial, year: f.year })
         : f.t === 'select' ? `<select id="${id}">${f.opts.map(([o, l]) => `<option value="${o}" ${String(val(f)) === o ? 'selected' : ''}>${l}</option>`).join('')}</select>`
         : f.t === 'textarea' ? `<textarea id="${id}" rows="2">${v}</textarea>`
@@ -63,7 +66,7 @@
         : wx && f.k === 'weather' ? '<div style="margin-top:6px"><button type="button" class="btn small" id="wxBtn">☁️ Wetter eintragen</button></div>'
         : f.t === 'places' ? '<div style="margin-top:6px"><button type="button" class="btn small" id="plRepick">🔄 Orte neu auswählen</button> <span class="muted small-text" id="plHint"></span></div>'
         : wx && f.k === 'location' ? '<div style="margin-top:6px"><button type="button" class="btn small" id="locBtn">📍 Standort bestimmen</button></div>' : '';
-      return `<div class="${f.wide ? 'wide' : ''}"><label for="${id}">${f.l}</label>${input}${extra}</div>`;
+      return `<div class="${f.wide ? 'wide' : ''}" ${dead ? `data-dead="1" ${isDead ? '' : 'hidden'}` : ''}><label for="${id}">${f.l}</label>${input}${extra}</div>`;
     };
     const allTags = [...new Set(items.flatMap((i) => i.tags))].sort();
     let encOn = !!it.encrypted;
@@ -159,6 +162,7 @@
       const self = () => nz($('#f_name').value);
       for (const [id, multi] of [['fam_mother', 0], ['fam_father', 0], ['fam_partner', 1], ['fam_kids', 1], ['fam_sibs', 1]]) M.family.suggest($('#' + id), () => personNames.filter((n) => nz(n) !== self()), multi);
     }
+    if ($('#f_deceased')) $('#f_deceased').addEventListener('change', (e) => { $$('#edForm [data-dead]').forEach((x) => { x.hidden = !e.target.checked; }); });
     if ($('#famOn')) $('#famOn').addEventListener('change', (e) => { $('#famFields').hidden = !e.target.checked; });
     const lsGet = (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } };
     const lsSet = (k, v) => { try { v === null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) { /* egal */ } };
@@ -364,12 +368,17 @@
     const collect = () => {
       const out = {};
       for (const f of defs) {
-        const el = $('#f_' + f.k); let v = f.t === 'date' ? M.readDate(el) : el.value.trim();
+        const el = $('#f_' + f.k); if (f.t === 'check') { out[f.k] = el.checked ? true : null; continue; }
+        let v = f.t === 'date' ? M.readDate(el) : el.value.trim();
         if (f.t === 'places') v = M.map.placesFrom(v, meta.places);
         else if (f.t === 'list') v = v ? v.split(/[,\n]/).map((x) => x.trim().replace(/^#/, '')).filter(Boolean) : null;
         else if (f.t === 'number') v = v === '' ? null : Number(v);
         else if (v === '') v = null;
         out[f.k] = v;
+      }
+      if (type === 'person') { // Sterbedatum/-ort zählen nur bei gesetztem Haken „Verstorben“
+        if (!$('#f_deceased').checked) { out.died = null; out.deathplace = null; out.deceased = null; }
+        else out.deceased = out.died || out.deathplace ? null : true;
       }
       if (type === 'journal' && feat('mood')) { out.mood = mood; out.energy = energy; }
       if (type === 'person') {
