@@ -1,0 +1,33 @@
+services:
+  memoria:
+    build: .
+    container_name: memoria
+    restart: unless-stopped
+    ports:
+      - "4444:4444"
+    environment:
+      TZ: Europe/Berlin
+      # Dateibesitzer im ./data-Ordner (auf Linux: `id -u` und `id -g` ausgeben lassen)
+      PUID: 1000
+      PGID: 1000
+      # Optional: legt beim ersten Start automatisch das Administrator-Konto an.
+      # Leer lassen = Konto wird beim ersten Aufruf im Browser angelegt.
+      ADMIN_USER: ""
+      ADMIN_PASSWORD: ""   # mindestens 10 Zeichen
+      # Hinter einem Reverse-Proxy (Caddy, nginx, Traefik) auf "1" setzen, damit die echte
+      # Client-IP für die Anmeldebegrenzung genutzt wird. Ohne Proxy leer lassen!
+      TRUST_PROXY: ""
+      # Optional: E-Mail-Erinnerungen (Einstellungen → Erinnerungen). Push läuft über ntfy/Webhook.
+      SMTP_HOST: ""
+      SMTP_PORT: 587
+      SMTP_SECURE: "starttls"   # ssl | starttls | none
+      SMTP_USER: ""
+      SMTP_PASSWORD: ""
+      # Optional: Kartenkacheln für die Karte (Standard: OpenStreetMap). Eigenen Tile-Server mit {z}/{x}/{y} angeben.
+      # Die Karte ist erst nach Aktivierung unter Einstellungen → Wetter & Ort aktiv.
+      TILE_URL: ""
+      TILE_ATTRIBUTION: ""
+      # Absender: muss eine VOLLSTÄNDIGE Adresse enthalten (sonst lehnt der Server mit „need fully-qualified address“ ab).
+      SMTP_FROM: "Memoria <memoria@example.org>"
+    volumes:
+      - ./data:/data

@@ -1,0 +1,22 @@
+{
+  "name": "Memoria",
+  "short_name": "Memoria",
+  "description": "Tagebuch, Personen und Notizen als Markdown",
+  "lang": "de",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f5f6f9",
+  "theme_color": "#4f46e5",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ],
+  "shortcuts": [
+    { "name": "Heute schreiben", "url": "/#/today", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
+    { "name": "Neue Notiz", "url": "/#/new-note" }
+  ],
+  "share_target": { "action": "/", "method": "GET", "params": { "title": "title", "text": "text", "url": "url" } }
+}

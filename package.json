@@ -1,0 +1,16 @@
+{
+  "name": "memoria",
+  "version": "2.7.0",
+  "description": "Persönliche Wissens- und Tagebuch-App: Personen-CRM (wie Monica), Tagebuch mit [[Wikilinks]] (wie Obsidian), Mood-Tracker. Alle Daten als Markdown-Dateien.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=22.5"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0",
+    "markdown-it": "^14.1.0"
+  }
+}

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <title>Memoria</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%93%3C/text%3E%3C/svg%3E">
+  <script src="theme-init.js"></script>
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="anon">
+  <a class="skip" id="skipLink" href="#/">Zum Inhalt springen</a>
+  <div class="shell">
+  <aside class="side" id="side">
+    <div class="side-head"><a class="brand" href="#/" aria-label="Memoria"><span class="bi">📓</span><span class="bt"> Memoria</span></a><button type="button" class="icon-btn" id="sbToggle" aria-label="Seitenleiste ein- oder ausklappen" aria-expanded="true" title="Seitenleiste ein-/ausklappen">‹</button></div>
+    <nav id="nav" aria-label="Hauptmenü">
+      <a href="#/" data-nav="/"><span class="ni" aria-hidden="true">🏠</span><span class="nl">Übersicht</span></a>
+      <a href="#/people" data-nav="/people,/person,/family,/map" data-feat="people"><span class="ni" aria-hidden="true">👥</span><span class="nl">Menschen</span></a>
+      <button type="button" class="nav-add" id="navAdd" data-quick aria-label="Schnell erfassen"><span aria-hidden="true">＋</span></button>
+      <a href="#/journal" data-nav="/journal"><span class="ni" aria-hidden="true">📓</span><span class="nl">Tagebuch</span></a>
+      <a href="#/notes" data-nav="/notes,/note" class="nav-desk"><span class="ni" aria-hidden="true">📝</span><span class="nl">Notizen</span></a>
+      <button type="button" class="nav-more" id="navMore" data-nav="/mood,/songs,/graph,/review,/check" aria-haspopup="menu" aria-expanded="false" aria-controls="moreMenu"><span class="ni" aria-hidden="true">⋯</span><span class="nl">Mehr</span></button>
+    </nav>
+  </aside>
+  <div class="stage">
+  <header class="top">
+    <a class="brand brand-m" href="#/" aria-label="Memoria"><span class="bi">📓</span></a>
+    <form id="searchForm" class="search" role="search">
+      <input id="searchInput" type="search" placeholder="Suchen…" aria-label="Suchen" autocomplete="off">
+    </form>
+    <button type="button" class="btn small" id="addBtn" data-quick title="Schnell erfassen (N)">⚡ Erfassen</button>
+    <a class="btn primary small" id="todayBtn" href="#/journal">Heute</a>
+    <a class="icon-btn" href="#/settings" title="Einstellungen" aria-label="Einstellungen">⚙️</a>
+    <span class="who" id="who"></span>
+    <button class="icon-btn" id="logoutBtn" title="Abmelden" aria-label="Abmelden">⎋</button>
+  </header>
+
+  <main id="main"><nav id="subnav" class="seg" aria-label="Menschen" hidden></nav><div id="app" tabindex="-1"><div class="card sk" aria-busy="true"><div class="sk-l w40"></div><div class="sk-l"></div><div class="sk-l w80"></div></div></div></main>
+  </div>
+  </div>
+  <div id="moreMenu" role="menu" aria-label="Weitere Seiten" hidden></div><div id="moreBg" hidden></div>
+  <div id="toast" role="status"></div>
+  <script src="core.js"></script>
+  <script src="charts.js"></script>
+  <script src="crypto.js"></script>
+  <script src="v-forms.js"></script>
+  <script src="v-dashboard.js"></script>
+  <script src="v-people.js"></script>
+  <script src="v-journal.js"></script>
+  <script src="v-family.js"></script>
+  <script src="v-map.js"></script>
+  <script src="v-review.js"></script>
+  <script src="v-quick.js"></script>
+  <script src="nav.js"></script>
+  <script src="icons.js"></script>
+  <script src="v-item.js"></script>
+  <script src="v-live.js"></script>
+  <script src="v-editor.js"></script>
+  <script src="v-mood.js"></script>
+  <script src="v-graph.js"></script>
+  <script src="v-tools.js"></script>
+  <script src="settings-ui.js"></script>
+  <script src="settings-more.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
